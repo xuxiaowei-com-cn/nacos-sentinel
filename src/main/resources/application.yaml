@@ -2,18 +2,8 @@ spring:
   application:
     name: nacos-sentinel
 ---
-spring:
-  config:
-    import: nacos:nacos-config-example.properties?refresh=true
-  cloud:
-    inetutils:
-      ignored-interfaces:
-        - VMware.*
-        - VirtualBox.*
-    nacos:
-      config:
-        server-addr: ${NACOS_SENTINEL_CONFIG_SERVER_ADDR:127.0.0.1:8848}
-        namespace: ${NACOS_SENTINEL_CONFIG_NAMESPACE:public}
-      discovery:
-        server-addr: ${NACOS_SENTINEL_DISCOVERY_SERVER_ADDR:127.0.0.1:8848}
-        namespace: ${NACOS_SENTINEL_DISCOVERY_NAMESPACE:public}
+nacos:
+  sentinel:
+    discovery:
+      server-addr: ${NACOS_SENTINEL_DISCOVERY_SERVER_ADDR:127.0.0.1:8848}
+      namespace: ${NACOS_SENTINEL_DISCOVERY_NAMESPACE:public}
