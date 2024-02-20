@@ -19,7 +19,7 @@ build:
       -DinstallAtEnd=true
       -DdeployAtEnd=true
   script:
-    - mvn clean package -DskipTests=true
+    - mvn clean package source:jar javadoc:jar deploy -DskipTests=true
   artifacts:
     name: nacos-sentinel
     paths:
