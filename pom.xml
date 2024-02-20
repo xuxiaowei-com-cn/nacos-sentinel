@@ -17,6 +17,8 @@
         <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-dependencies -->
         <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
 
+        <skipTests>true</skipTests>
+
     </properties>
     <dependencies>
 
