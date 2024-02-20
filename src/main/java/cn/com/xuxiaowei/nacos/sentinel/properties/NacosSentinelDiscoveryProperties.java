@@ -19,21 +19,21 @@ import java.util.Properties;
 @ConfigurationProperties("nacos.sentinel.discovery")
 public class NacosSentinelDiscoveryProperties {
 
-    private String serverAddr = "127.0.0.1:8848";
+	private String serverAddr = "127.0.0.1:8848";
 
-    private String namespace = "public";
+	private String namespace = "public";
 
-    private int pageNo = 1;
+	private int pageNo = 1;
 
-    private int pageSize = Integer.MAX_VALUE;
+	private int pageSize = Integer.MAX_VALUE;
 
-    private String groupName = Constants.DEFAULT_GROUP;
+	private String groupName = Constants.DEFAULT_GROUP;
 
-    public Properties getProperties() {
-        Properties properties = new Properties();
-        properties.setProperty(PropertyKeyConst.SERVER_ADDR, serverAddr);
-        properties.setProperty(PropertyKeyConst.NAMESPACE, namespace);
-        return properties;
-    }
+	public Properties getProperties() {
+		Properties properties = new Properties();
+		properties.setProperty(PropertyKeyConst.SERVER_ADDR, serverAddr);
+		properties.setProperty(PropertyKeyConst.NAMESPACE, namespace);
+		return properties;
+	}
 
 }
