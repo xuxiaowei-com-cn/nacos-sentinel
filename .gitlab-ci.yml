@@ -19,7 +19,9 @@ build:
       -DinstallAtEnd=true
       -DdeployAtEnd=true
   script:
-    - sed -i "s#</servers>#<server><id>ossrh</id><username>$ossrh_user</username><password>$ossrh_pass</password></server>&#" settings.xml
+    - SETTINGS_FILE=`find / -name settings.xml`
+    - echo $SETTINGS_FILE
+    - sed -i "s#</servers>#<server><id>ossrh</id><username>$ossrh_user</username><password>$ossrh_pass</password></server>&#" $SETTINGS_FILE
     - mvn clean package source:jar javadoc:jar deploy -DskipTests=true
   artifacts:
     name: nacos-sentinel
