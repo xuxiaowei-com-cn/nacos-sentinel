@@ -57,8 +57,9 @@ public class NacosDiscoveryListener {
 			String namespace = properties.getProperty(PropertyKeyConst.NAMESPACE);
 
 			log.info("");
-			log.info("Nacos 连接地址: {}", serverAddr);
-			log.info("Nacos 命名空间: {}", namespace);
+			String logId = RandomStringUtils.randomAlphanumeric(6);
+			log.info("【{}】Nacos 连接地址: {}", logId, serverAddr);
+			log.info("【{}】Nacos 命名空间: {}", logId, namespace);
 			log.info("");
 
 			try {
@@ -83,7 +84,8 @@ public class NacosDiscoveryListener {
 		List<String> serviceNames = servicesOfServer.getData();
 
 		log.info("");
-		log.info("Nacos 服务总数量: {}", serviceNames.size());
+		String logId = RandomStringUtils.randomAlphanumeric(6);
+		log.info("【{}】Nacos 服务总数量: {}", logId, serviceNames.size());
 
 		int maxLength = 0;
 		for (String serviceName : serviceNames) {
@@ -91,7 +93,7 @@ public class NacosDiscoveryListener {
 		}
 
 		log.info("");
-		String logId = RandomStringUtils.randomAlphanumeric(6);
+		logId = RandomStringUtils.randomAlphanumeric(6);
 		log.info("【{}】Nacos 服务实例:", logId);
 		for (String serviceName : serviceNames) {
 			healthy(logId, maxLength, serviceName, namingService, true);
