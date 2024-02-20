@@ -1,9 +1,31 @@
+server:
+  port: ${NACOS_SENTINEL_SERVER_PORT:8080}
+---
 spring:
   application:
-    name: nacos-sentinel
+    name: ${NACOS_SENTINEL_SPRING_APPLICATION_NAME:nacos-sentinel}
 ---
 nacos:
   sentinel:
     discovery:
       server-addr: ${NACOS_SENTINEL_DISCOVERY_SERVER_ADDR:127.0.0.1:8848}
       namespace: ${NACOS_SENTINEL_DISCOVERY_NAMESPACE:public}
+---
+logging:
+  level:
+    org.springframework.web: debug
+    cn.com.xuxiaowei.nacos.sentinel: debug
+  file:
+    name: ${NACOS_SENTINEL_LOGS_FOLDER:/logs}/${spring.application.name}/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      # 文件最大大小，单位: org.springframework.util.unit.DataSize
+      # 旧版使用：logging.file.max-size
+      max-file-size: ${NACOS_SENTINEL_LOGS_MAX_FILE_SIZE:20MB}
+      # 日志保存天数
+      # 旧版使用：logging.file.max-history
+      max-history: ${NACOS_SENTINEL_LOGS_MAX_HISTORY:365}
+      # 压缩文件命名
+      # 后缀名中比原始配置添加了 `.log`，解压后方便打开看
+      # 旧版使用：logging.pattern.rolling-file-name
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.log.gz
