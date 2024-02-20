@@ -5,6 +5,7 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ public class NacosDiscoveryListener {
         ListView<String> servicesOfServer = namingService.getServicesOfServer(pageNo, pageSize, groupName);
         List<String> serviceNames = servicesOfServer.getData();
 
+        log.info("");
         log.info("service size: {}", serviceNames.size());
 
         int maxLength = 0;
@@ -56,31 +58,45 @@ public class NacosDiscoveryListener {
             maxLength = Math.max(maxLength, serviceName.length());
         }
 
+        log.info("");
+        log.info("service instance:");
+        for (String serviceName : serviceNames) {
+            healthy(maxLength, serviceName, namingService, true);
+            healthy(maxLength, serviceName, namingService, false);
+        }
+
+        log.info("");
         log.info("service healthy:");
         for (String serviceName : serviceNames) {
             List<Instance> instanceOnline = namingService.selectInstances(serviceName, true);
             List<Instance> instanceOffline = namingService.selectInstances(serviceName, false);
-            log.info("{}:\ttrue: {}\tfalse: {}", String.format("%-" + maxLength + "s", serviceName), instanceOnline.size(), instanceOffline.size());
+            log.info("{} service healthy:\ttrue: {}\tfalse: {}", String.format("%-" + maxLength + "s", serviceName), instanceOnline.size(), instanceOffline.size());
         }
 
-        log.info("service instance:");
         for (String serviceName : serviceNames) {
-            List<Instance> instanceOnline = namingService.selectInstances(serviceName, true);
-            if (!instanceOnline.isEmpty()) {
-                for (Instance instance : instanceOnline) {
-                    String ip = instance.getIp();
-                    int port = instance.getPort();
-                    log.info("{} instance healthy true: {}:{}", String.format("%-" + maxLength + "s", serviceName), ip, port);
-                }
-            }
+            namingService.subscribe(serviceName, event -> {
+                log.info("");
+                NamingEvent namingEvent = (NamingEvent) event;
+                List<Instance> instances = namingEvent.getInstances();
 
-            List<Instance> instanceOffline = namingService.selectInstances(serviceName, false);
-            if (!instanceOffline.isEmpty()) {
-                for (Instance instance : instanceOffline) {
+                log.info("{} instance subscribe {} change: \tsize: {}", serviceName, namingEvent.getGroupName(), instances.size());
+
+                for (Instance instance : instances) {
                     String ip = instance.getIp();
                     int port = instance.getPort();
-                    log.info("{} instance healthy false: {}:{}", String.format("%-" + maxLength + "s", serviceName), ip, port);
+                    log.info("{} instance subscribe {}: {}:{}", serviceName, namingEvent.getGroupName(), ip, port);
                 }
+            });
+        }
+    }
+
+    private void healthy(int maxLength, String serviceName, NamingService namingService, boolean healthy) throws NacosException {
+        List<Instance> instances = namingService.selectInstances(serviceName, healthy);
+        if (!instances.isEmpty()) {
+            for (Instance instance : instances) {
+                String ip = instance.getIp();
+                int port = instance.getPort();
+                log.info("{} service instance healthy {}: {}:{} {}", String.format("%-" + maxLength + "s", serviceName), healthy, ip, port, instance.getServiceName());
             }
         }
     }
