@@ -13,6 +13,7 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 import com.alibaba.nacos.client.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -90,18 +91,20 @@ public class NacosDiscoveryListener {
 		}
 
 		log.info("");
-		log.info("Nacos 服务实例:");
+		String logId = RandomStringUtils.randomAlphanumeric(6);
+		log.info("【{}】Nacos 服务实例:", logId);
 		for (String serviceName : serviceNames) {
-			healthy(maxLength, serviceName, namingService, true);
-			healthy(maxLength, serviceName, namingService, false);
+			healthy(logId, maxLength, serviceName, namingService, true);
+			healthy(logId, maxLength, serviceName, namingService, false);
 		}
 
 		log.info("");
-		log.info("Nacos 服务健康状况:");
+		logId = RandomStringUtils.randomAlphanumeric(6);
+		log.info("【{}】Nacos 服务健康状况:", logId);
 		for (String serviceName : serviceNames) {
 			List<Instance> instanceOnline = namingService.selectInstances(serviceName, true);
 			List<Instance> instanceOffline = namingService.selectInstances(serviceName, false);
-			log.info("Nacos 服务名称: {}，健康数量: {}，不健康数量: {}", StringUtils.formatLength(serviceName, maxLength),
+			log.info("【{}】Nacos 服务名称: {}，健康数量: {}，不健康数量: {}", logId, StringUtils.formatLength(serviceName, maxLength),
 					StringUtils.formatLength(instanceOnline.size(), 2),
 					StringUtils.formatLength(instanceOffline.size(), 2));
 		}
@@ -112,8 +115,10 @@ public class NacosDiscoveryListener {
 				List<Instance> instances = namingEvent.getInstances();
 
 				log.info("");
-				log.info("Nacos 服务订阅: {}", serviceName);
-				log.info("Nacos 服务名称: {}，服务数量: {}，群组名称：{}", serviceName, instances.size(), namingEvent.getGroupName());
+				String subscribeLogId = RandomStringUtils.randomAlphanumeric(6);
+				log.info("【{}】Nacos 服务订阅: {}", subscribeLogId, serviceName);
+				log.info("【{}】Nacos 服务名称: {}，服务数量: {}，群组名称：{}", subscribeLogId, serviceName, instances.size(),
+						namingEvent.getGroupName());
 
 				List<Discovery> discoveries = nacosDiscoveryRepository.listByServiceName(serviceName);
 
@@ -122,7 +127,7 @@ public class NacosDiscoveryListener {
 					String ip = instance.getIp();
 					int port = instance.getPort();
 					String clusterName = instance.getClusterName();
-					log.info("Nacos 服务名称: {}，IP: {}，端口: {}，群组名称: {}，集群名称: {}", serviceName,
+					log.info("【{}】Nacos 服务名称: {}，IP: {}，端口: {}，群组名称: {}，集群名称: {}", subscribeLogId, serviceName,
 							StringUtils.formatLength(ip, 15), StringUtils.formatLength(port, 5),
 							namingEvent.getGroupName(), clusterName);
 
@@ -156,14 +161,14 @@ public class NacosDiscoveryListener {
 
 				if (!adds.isEmpty()) {
 					log.info("");
-					log.info("Nacos 上线服务: {}", serviceName);
+					log.info("【{}】Nacos 上线服务: {}", subscribeLogId, serviceName);
 
 					for (Instance instance : adds) {
 						String ip = instance.getIp();
 						int port = instance.getPort();
 
 						String clusterName = instance.getClusterName();
-						log.info("Nacos 上线服务名称: {}，IP: {}，端口: {}，群组名称: {}，集群名称: {}", serviceName,
+						log.info("【{}】Nacos 上线服务名称: {}，IP: {}，端口: {}，群组名称: {}，集群名称: {}", subscribeLogId, serviceName,
 								StringUtils.formatLength(ip, 15), StringUtils.formatLength(port, 5),
 								StringUtils.extractAtLeft(instance.getServiceName()), clusterName);
 
@@ -178,13 +183,13 @@ public class NacosDiscoveryListener {
 
 				if (!deletes.isEmpty()) {
 					log.warn("");
-					log.warn("Nacos 下线服务: {}", serviceName);
+					log.warn("【{}】Nacos 下线服务: {}", subscribeLogId, serviceName);
 
 					for (Discovery discovery : deletes) {
 						String id = discovery.getId();
 						String ip = discovery.getIp();
 						int port = discovery.getPort();
-						log.warn("Nacos 下线服务名称: {}，IP: {}，端口: {}", serviceName, ip, port);
+						log.warn("【{}】Nacos 下线服务名称: {}，IP: {}，端口: {}", subscribeLogId, serviceName, ip, port);
 
 						nacosDiscoveryRepository.deleteById(id);
 					}
@@ -194,7 +199,7 @@ public class NacosDiscoveryListener {
 		}
 	}
 
-	private void healthy(int maxLength, String serviceName, NamingService namingService, boolean healthy)
+	private void healthy(String logId, int maxLength, String serviceName, NamingService namingService, boolean healthy)
 			throws NacosException {
 		List<Instance> instances = namingService.selectInstances(serviceName, healthy);
 		if (!instances.isEmpty()) {
@@ -202,7 +207,7 @@ public class NacosDiscoveryListener {
 				String ip = instance.getIp();
 				int port = instance.getPort();
 				String clusterName = instance.getClusterName();
-				log.info("Nacos 服务名称: {}，健康状况: {}，IP: {}，端口: {}，群组名称: {}，集群名称: {}",
+				log.info("【{}】Nacos 服务名称: {}，健康状况: {}，IP: {}，端口: {}，群组名称: {}，集群名称: {}", logId,
 						StringUtils.formatLength(serviceName, maxLength), StringUtils.formatLength(healthy, 5),
 						StringUtils.formatLength(ip, 15), StringUtils.formatLength(port, 5),
 						StringUtils.extractAtLeft(instance.getServiceName()), clusterName);
