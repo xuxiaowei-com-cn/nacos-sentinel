@@ -52,9 +52,21 @@ build:
   needs:
     - job: package
       artifacts: true
+  before_script:
+    - echo "{\"auths\":{\"https://${DOCKER_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${DOCKER_USERNAME}" "${DOCKER_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - echo $GROUP_ID
     - echo $ARTIFACT_ID
     - echo $VERSION
     - /kaniko/executor version
     - /kaniko/executor --help
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID}
+      --build-arg CI_JOB_ID=${CI_JOB_ID}
+      --build-arg GROUP_ID=${GROUP_ID}
+      --build-arg ARTIFACT_ID=${ARTIFACT_ID}
+      --build-arg VERSION=${VERSION}
+      --destination "${DOCKER_REGISTRY}/${NAMESPACE}/${ARTIFACT_ID}:${VERSION}-${CI_PIPELINE_ID}"
