@@ -14,6 +14,7 @@ nacos:
 logging:
   level:
     org.springframework.web: debug
+    org.apache.coyote.http11: debug
     cn.com.xuxiaowei.nacos.sentinel: debug
   file:
     name: ${NACOS_SENTINEL_LOGS_FOLDER:/logs}/${spring.application.name}/${spring.application.name}.log

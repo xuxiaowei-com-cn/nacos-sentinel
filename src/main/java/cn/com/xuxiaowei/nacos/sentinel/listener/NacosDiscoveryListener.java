@@ -12,6 +12,7 @@ import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
 import com.alibaba.nacos.client.constant.Constants;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class NacosDiscoveryListener {
 
 	private final Set<String> subscribes = ConcurrentHashMap.newKeySet();
 
+	@Getter
 	private NacosSentinelDiscoveryProperties nacosSentinelDiscoveryProperties;
 
 	private NacosDiscoveryRepository nacosDiscoveryRepository;
@@ -51,7 +53,7 @@ public class NacosDiscoveryListener {
 
 	private NamingService namingService;
 
-	private void createNamingService() {
+	public NamingService createNamingService() {
 		if (!(namingService != null && Constants.HealthCheck.UP.equals(namingService.getServerStatus()))) {
 			Properties properties = nacosSentinelDiscoveryProperties.getProperties();
 			String serverAddr = properties.getProperty(PropertyKeyConst.SERVER_ADDR);
@@ -79,6 +81,7 @@ public class NacosDiscoveryListener {
 				}
 			}
 		}
+		return namingService;
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
