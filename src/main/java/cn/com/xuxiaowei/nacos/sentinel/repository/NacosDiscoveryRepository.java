@@ -61,7 +61,7 @@ public class NacosDiscoveryRepository {
 
 	public List<Discovery> listByServiceName(String serviceName) {
 		try {
-			return jdbcTemplate.query(GET_BY_SERVICE_NAME, new Object[] { serviceName }, new int[] { Types.VARBINARY },
+			return jdbcTemplate.query(GET_BY_SERVICE_NAME, new Object[] { serviceName }, new int[] { Types.VARCHAR },
 					(rs, rowNum) -> convert(rs));
 		}
 		catch (EmptyResultDataAccessException e) {
@@ -72,7 +72,7 @@ public class NacosDiscoveryRepository {
 	public Discovery getByUnique(String serviceName, String ip, int port) {
 		try {
 			return jdbcTemplate.queryForObject(GET_BY_INSTANCE, new Object[] { serviceName, ip, port },
-					new int[] { Types.VARBINARY, Types.VARBINARY, Types.INTEGER }, (rs, rowNum) -> convert(rs));
+					new int[] { Types.VARCHAR, Types.VARCHAR, Types.INTEGER }, (rs, rowNum) -> convert(rs));
 		}
 		catch (EmptyResultDataAccessException e) {
 			return null;
