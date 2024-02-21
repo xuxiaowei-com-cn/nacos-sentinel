@@ -1,9 +1,9 @@
 stages:
-  - package
-  - build
+  - build:java
+  - build:docker
 
-package:
-  stage: package
+build:java:
+  stage: build:java
   image: maven:3.6.3-jdk-8
   variables:
     MAVEN_OPTS: >-
@@ -44,13 +44,13 @@ package:
     paths:
       - .m2/repository
 
-build:
-  stage: build
+build:docker:
+  stage: build:docker
   image:
     name: gcr.io/kaniko-project/executor:v1.9.2-debug
     entrypoint: [ "" ]
   needs:
-    - job: package
+    - job: build:java
       artifacts: true
   before_script:
     - echo "{\"auths\":{\"https://${DOCKER_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${DOCKER_USERNAME}" "${DOCKER_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
