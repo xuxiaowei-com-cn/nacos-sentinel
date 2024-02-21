@@ -217,12 +217,15 @@ public class NacosDiscoveryListener {
 							StringUtils.formatLength(ip, 15), StringUtils.formatLength(port, 5),
 							StringUtils.extractAtLeft(instance.getServiceName()), clusterName);
 
-					Discovery discovery = new Discovery().setId(UUID.randomUUID().toString())
-						.setServiceName(serviceName)
-						.setIp(ip)
-						.setPort(port);
+					Discovery getByUnique = nacosDiscoveryRepository.getByUnique(serviceName, ip, port);
 
-					nacosDiscoveryRepository.save(discovery);
+					if (getByUnique == null) {
+						Discovery discovery = new Discovery().setId(UUID.randomUUID().toString())
+							.setServiceName(serviceName)
+							.setIp(ip)
+							.setPort(port);
+						nacosDiscoveryRepository.save(discovery);
+					}
 				}
 			}
 
