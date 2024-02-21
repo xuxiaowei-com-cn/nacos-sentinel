@@ -64,6 +64,7 @@ build:docker:
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --build-arg CI_SERVER_URL=${CI_SERVER_URL}
       --build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID}
       --build-arg CI_JOB_ID=${CI_JOB_ID}
       --build-arg GROUP_ID=${GROUP_ID}
