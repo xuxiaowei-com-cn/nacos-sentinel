@@ -69,4 +69,4 @@ build:docker:
       --build-arg GROUP_ID=${GROUP_ID}
       --build-arg ARTIFACT_ID=${ARTIFACT_ID}
       --build-arg VERSION=${VERSION}
-      --destination "${DOCKER_REGISTRY}/${NAMESPACE}/${ARTIFACT_ID}:${VERSION}-${CI_PIPELINE_ID}"
+      --destination "${DOCKER_USERNAME}/${ARTIFACT_ID}:${VERSION}-${CI_PIPELINE_ID}"
