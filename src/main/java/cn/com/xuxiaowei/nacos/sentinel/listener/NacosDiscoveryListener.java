@@ -126,7 +126,7 @@ public class NacosDiscoveryListener {
 		}
 	}
 
-	@Scheduled(fixedRate = 5000)
+	@Scheduled(fixedRate = 5000, initialDelay = 180000)
 	public void myScheduledMethod() throws NacosException {
 
 		createNamingService();
