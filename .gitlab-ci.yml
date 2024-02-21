@@ -1,6 +1,7 @@
 stages:
   - build:java
   - build:docker
+  - sync
 
 build:java:
   stage: build:java
@@ -71,3 +72,8 @@ build:docker:
       --build-arg ARTIFACT_ID=${ARTIFACT_ID}
       --build-arg VERSION=${VERSION}
       --destination "${DOCKER_USERNAME}/${ARTIFACT_ID}:${VERSION}-${CI_PIPELINE_ID}"
+
+# 嵌入
+include:
+  # 同步代码
+  - /sync.yml
