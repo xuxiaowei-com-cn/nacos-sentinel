@@ -128,6 +128,20 @@
 
 ## [更新日志](CHANGELOG.md)
 
+## 使用说明
+
+### 环境变量
+
+| 环境变量名称                                 | 默认值            | 说明                                                     |
+|----------------------------------------|----------------|--------------------------------------------------------|
+| NACOS_SENTINEL_SERVER_PORT             | 8080           | 端口                                                     |
+| NACOS_SENTINEL_SPRING_APPLICATION_NAME | nacos-sentinel | 项目名称，日志文件名称                                            |
+| NACOS_SENTINEL_DISCOVERY_SERVER_ADDR   | 127.0.0.1:8848 | Nacos 注册中心地址                                           |   
+| NACOS_SENTINEL_DISCOVERY_NAMESPACE     | public         | Nacos 注册中心命名空间                                         |
+| NACOS_SENTINEL_LOGS_FOLDER             | /logs          | 日志文件夹前缀                                                |   
+| NACOS_SENTINEL_LOGS_MAX_FILE_SIZE      | 20MB           | 日志文件压缩阈值大小，类型：`org.springframework.util.unit.DataSize` |   
+| NACOS_SENTINEL_LOGS_MAX_HISTORY        | 365            | 日志保留日期，单位：天                                            |
+
 ## [代码格式规范 spring-javaformat](https://github.com/spring-io/spring-javaformat)
 
 - IntelliJ IDEA
