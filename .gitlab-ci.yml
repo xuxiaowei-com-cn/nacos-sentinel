@@ -53,6 +53,8 @@ build:docker:
   needs:
     - job: build:java
       artifacts: true
+  variables:
+    NACOS_SENTINEL_JAVA_OPTS: -Xms256m -Xmx512m
   before_script:
     - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(printf "%s:%s" "${DOCKER_USERNAME}" "${DOCKER_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
@@ -68,6 +70,7 @@ build:docker:
       --build-arg CI_SERVER_URL=${CI_SERVER_URL}
       --build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID}
       --build-arg CI_JOB_ID=${CI_JOB_ID}
+      --build-arg NACOS_SENTINEL_JAVA_OPTS="${NACOS_SENTINEL_JAVA_OPTS}"
       --build-arg GROUP_ID=${GROUP_ID}
       --build-arg ARTIFACT_ID=${ARTIFACT_ID}
       --build-arg VERSION=${VERSION}

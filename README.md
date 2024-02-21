@@ -130,17 +130,20 @@
 
 ## 使用说明
 
+- [docker 镜像](https://hub.docker.com/r/xuxiaoweicomcn/nacos-sentinel)
+
 ### 环境变量
 
-| 环境变量名称                                 | 默认值            | 说明                                                     |
-|----------------------------------------|----------------|--------------------------------------------------------|
-| NACOS_SENTINEL_SERVER_PORT             | 8080           | 端口                                                     |
-| NACOS_SENTINEL_SPRING_APPLICATION_NAME | nacos-sentinel | 项目名称，日志文件名称                                            |
-| NACOS_SENTINEL_DISCOVERY_SERVER_ADDR   | 127.0.0.1:8848 | Nacos 注册中心地址                                           |   
-| NACOS_SENTINEL_DISCOVERY_NAMESPACE     | public         | Nacos 注册中心命名空间                                         |
-| NACOS_SENTINEL_LOGS_FOLDER             | /logs          | 日志文件夹前缀                                                |   
-| NACOS_SENTINEL_LOGS_MAX_FILE_SIZE      | 20MB           | 日志文件压缩阈值大小，类型：`org.springframework.util.unit.DataSize` |   
-| NACOS_SENTINEL_LOGS_MAX_HISTORY        | 365            | 日志保留日期，单位：天                                            |
+| 环境变量名称                                 | 默认值               | 说明                                                          |
+|----------------------------------------|-------------------|-------------------------------------------------------------|
+| NACOS_SENTINEL_SERVER_PORT             | 8080              | 端口                                                          |
+| NACOS_SENTINEL_SPRING_APPLICATION_NAME | nacos-sentinel    | 项目名称，日志文件名称                                                 |
+| NACOS_SENTINEL_DISCOVERY_SERVER_ADDR   | 127.0.0.1:8848    | Nacos 注册中心地址                                                |   
+| NACOS_SENTINEL_DISCOVERY_NAMESPACE     | public            | Nacos 注册中心命名空间                                              |
+| NACOS_SENTINEL_LOGS_FOLDER             | /logs             | 日志文件夹前缀                                                     |   
+| NACOS_SENTINEL_LOGS_MAX_FILE_SIZE      | 20MB              | 日志文件压缩阈值大小，类型：`org.springframework.util.unit.DataSize`      |   
+| NACOS_SENTINEL_LOGS_MAX_HISTORY        | 365               | 日志保留日期，单位：天                                                 |
+| NACOS_SENTINEL_JAVA_OPTS               | -Xms256m -Xmx512m | 仅 docker 镜像生效。JVM堆的初始内存大小为256兆字节（MB），JVM堆的最大内存大小为512兆字节（MB） |
 
 ## [代码格式规范 spring-javaformat](https://github.com/spring-io/spring-javaformat)
 
