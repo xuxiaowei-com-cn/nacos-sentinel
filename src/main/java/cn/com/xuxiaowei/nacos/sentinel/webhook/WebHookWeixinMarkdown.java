@@ -13,28 +13,28 @@ import java.util.List;
  * @since 0.0.1
  */
 @Data
-public class WebHookWeixinText implements WebHookWeixin {
+public class WebHookWeixinMarkdown implements WebHookWeixin {
 
 	@Setter(AccessLevel.NONE)
-	private String msgtype = "text";
+	private String msgtype = "markdown";
 
 	@Setter(AccessLevel.NONE)
-	private Text text = new Text();
+	private Markdown markdown = new Markdown();
 
-	public WebHookWeixinText(@NonNull String content) {
-		this.text.setContent(content);
+	public WebHookWeixinMarkdown(@NonNull String content) {
+		this.markdown.setContent(content);
 	}
 
 	public void setMentionedList(List<String> mentionedList) {
-		this.text.setMentionedList(mentionedList);
+		this.markdown.setMentionedList(mentionedList);
 	}
 
 	public void setMentionedMobileList(List<String> mentionedMobileList) {
-		this.text.setMentionedMobileList(mentionedMobileList);
+		this.markdown.setMentionedMobileList(mentionedMobileList);
 	}
 
 	@Data
-	public static class Text {
+	public static class Markdown {
 
 		/**
 		 * 文本内容，最长不超过2048个字节，必须是utf8编码

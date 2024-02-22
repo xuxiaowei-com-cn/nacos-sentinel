@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 /**
  * @author xuxiaowei
  * @since 0.0.1
@@ -13,16 +15,16 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class WebHookUtils {
 
-	public static Object post(String url, WebHookWeixinText webHook) {
+	public static Map<String, Object> post(String url, WebHookWeixin webHook) {
 
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<WebHookWeixinText> httpEntity = new HttpEntity<>(webHook, httpHeaders);
+		HttpEntity<WebHookWeixin> httpEntity = new HttpEntity<>(webHook, httpHeaders);
 
-		return restTemplate.postForObject(url, httpEntity, Object.class);
+		return restTemplate.postForObject(url, httpEntity, Map.class);
 	}
 
 }

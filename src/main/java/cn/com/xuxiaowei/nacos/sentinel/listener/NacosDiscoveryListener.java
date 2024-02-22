@@ -6,7 +6,7 @@ import cn.com.xuxiaowei.nacos.sentinel.properties.NacosSentinelWebhookWeixinProp
 import cn.com.xuxiaowei.nacos.sentinel.repository.NacosDiscoveryRepository;
 import cn.com.xuxiaowei.nacos.sentinel.utils.StringUtils;
 import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookUtils;
-import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookWeixinText;
+import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookWeixinMarkdown;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
@@ -249,14 +249,15 @@ public class NacosDiscoveryListener {
 
 					if (org.springframework.util.StringUtils.hasText(weixinWebhookUrl)) {
 						String content = String.format(
-								"Nacos【%s:%s】上线服务【%s】:\n服务名称: %s\nIP: %s\n端口: %s\n群组名称: %s\n集群名称: %s", serverAddr,
-								namespace, subscribeLogId, serviceName, ip, port,
+								"Nacos【%s:%s】<font color=\"info\">上线服务</font>【%s】:\n服务名称: %s\nIP: %s\n端口: %s\n群组名称: %s\n集群名称: %s",
+								serverAddr, namespace, subscribeLogId, serviceName, ip, port,
 								StringUtils.extractAtLeft(instance.getServiceName()), clusterName);
-						WebHookWeixinText webHook = new WebHookWeixinText(content);
+						WebHookWeixinMarkdown webHook = new WebHookWeixinMarkdown(content);
 						webHook.setMentionedList(mentionedList);
 						webHook.setMentionedMobileList(mentionedMobileList);
 						try {
-							WebHookUtils.post(weixinWebhookUrl, webHook);
+							Map<String, Object> post = WebHookUtils.post(weixinWebhookUrl, webHook);
+							log.info("【{}】发送企业微信 Webhook 响应：{}", subscribeLogId, post);
 						}
 						catch (Exception e) {
 							log.error(String.format("【%s】发送企业微信 Webhook 异常：", subscribeLogId), e);
@@ -279,13 +280,15 @@ public class NacosDiscoveryListener {
 					nacosDiscoveryRepository.deleteById(id);
 
 					if (org.springframework.util.StringUtils.hasText(weixinWebhookUrl)) {
-						String content = String.format("Nacos【%s:%s】下线服务【%s】:\n服务名称: %s\nIP: %s\n端口: %s", serverAddr,
-								namespace, subscribeLogId, serviceName, ip, port);
-						WebHookWeixinText webHook = new WebHookWeixinText(content);
+						String content = String.format(
+								"Nacos【%s:%s】<font color=\"warning\">下线服务</font>【%s】:\n服务名称: %s\nIP: %s\n端口: %s",
+								serverAddr, namespace, subscribeLogId, serviceName, ip, port);
+						WebHookWeixinMarkdown webHook = new WebHookWeixinMarkdown(content);
 						webHook.setMentionedList(mentionedList);
 						webHook.setMentionedMobileList(mentionedMobileList);
 						try {
-							WebHookUtils.post(weixinWebhookUrl, webHook);
+							Map<String, Object> post = WebHookUtils.post(weixinWebhookUrl, webHook);
+							log.info("【{}】发送企业微信 Webhook 响应：{}", subscribeLogId, post);
 						}
 						catch (Exception e) {
 							log.error(String.format("【%s】发送企业微信 Webhook 异常：", subscribeLogId), e);
