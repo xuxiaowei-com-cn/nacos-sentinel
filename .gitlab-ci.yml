@@ -44,6 +44,13 @@ build:java:
     key: "${CI_JOB_NAME}"
     paths:
       - .m2/repository
+  rules:
+    - changes:
+        - src
+        - .gitlab-ci.yml
+        - .springjavaformatconfig
+        - Dockerfile
+        - pom.xml
 
 build:docker:
   stage: build:docker
@@ -75,6 +82,13 @@ build:docker:
       --build-arg ARTIFACT_ID=${ARTIFACT_ID}
       --build-arg VERSION=${VERSION}
       --destination "${DOCKER_USERNAME}/${ARTIFACT_ID}:${VERSION}-${CI_PIPELINE_ID}"
+  rules:
+    - changes:
+        - src
+        - .gitlab-ci.yml
+        - .springjavaformatconfig
+        - Dockerfile
+        - pom.xml
 
 # 嵌入
 include:
