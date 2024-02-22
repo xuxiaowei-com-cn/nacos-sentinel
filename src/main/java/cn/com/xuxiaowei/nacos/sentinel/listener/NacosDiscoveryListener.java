@@ -2,8 +2,11 @@ package cn.com.xuxiaowei.nacos.sentinel.listener;
 
 import cn.com.xuxiaowei.nacos.sentinel.entity.Discovery;
 import cn.com.xuxiaowei.nacos.sentinel.properties.NacosSentinelDiscoveryProperties;
+import cn.com.xuxiaowei.nacos.sentinel.properties.NacosSentinelWebhookWeixinProperties;
 import cn.com.xuxiaowei.nacos.sentinel.repository.NacosDiscoveryRepository;
 import cn.com.xuxiaowei.nacos.sentinel.utils.StringUtils;
+import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookUtils;
+import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookWeixinText;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
@@ -39,11 +42,19 @@ public class NacosDiscoveryListener {
 	@Getter
 	private NacosSentinelDiscoveryProperties nacosSentinelDiscoveryProperties;
 
+	private NacosSentinelWebhookWeixinProperties nacosSentinelWebhookWeixinProperties;
+
 	private NacosDiscoveryRepository nacosDiscoveryRepository;
 
 	@Autowired
 	public void setNacosSentinelDiscoveryProperties(NacosSentinelDiscoveryProperties nacosSentinelDiscoveryProperties) {
 		this.nacosSentinelDiscoveryProperties = nacosSentinelDiscoveryProperties;
+	}
+
+	@Autowired
+	public void setNacosSentinelWebhookWeixinProperties(
+			NacosSentinelWebhookWeixinProperties nacosSentinelWebhookWeixinProperties) {
+		this.nacosSentinelWebhookWeixinProperties = nacosSentinelWebhookWeixinProperties;
 	}
 
 	@Autowired
@@ -207,6 +218,12 @@ public class NacosDiscoveryListener {
 				}
 			}
 
+			String serverAddr = nacosSentinelDiscoveryProperties.getServerAddr();
+			String namespace = nacosSentinelDiscoveryProperties.getNamespace();
+			String weixinWebhookUrl = nacosSentinelWebhookWeixinProperties.getUrl();
+			List<String> mentionedList = nacosSentinelWebhookWeixinProperties.getMentionedList();
+			List<String> mentionedMobileList = nacosSentinelWebhookWeixinProperties.getMentionedMobileList();
+
 			if (!adds.isEmpty()) {
 				log.info("");
 				log.info("【{}】Nacos 上线服务: {}", subscribeLogId, serviceName);
@@ -229,6 +246,23 @@ public class NacosDiscoveryListener {
 							.setPort(port);
 						nacosDiscoveryRepository.save(discovery);
 					}
+
+					if (org.springframework.util.StringUtils.hasText(weixinWebhookUrl)) {
+						String content = String.format(
+								"Nacos【%s:%s】上线服务【%s】:\n服务名称: %s\nIP: %s\n端口: %s\n群组名称: %s\n集群名称: %s", serverAddr,
+								namespace, subscribeLogId, serviceName, ip, port,
+								StringUtils.extractAtLeft(instance.getServiceName()), clusterName);
+						WebHookWeixinText webHook = new WebHookWeixinText(content);
+						webHook.setMentionedList(mentionedList);
+						webHook.setMentionedMobileList(mentionedMobileList);
+						try {
+							WebHookUtils.post(weixinWebhookUrl, webHook);
+						}
+						catch (Exception e) {
+							log.error(String.format("【%s】发送企业微信 Webhook 异常：", subscribeLogId), e);
+						}
+					}
+
 				}
 			}
 
@@ -243,6 +277,20 @@ public class NacosDiscoveryListener {
 					log.warn("【{}】Nacos 下线服务名称: {}，IP: {}，端口: {}", subscribeLogId, serviceName, ip, port);
 
 					nacosDiscoveryRepository.deleteById(id);
+
+					if (org.springframework.util.StringUtils.hasText(weixinWebhookUrl)) {
+						String content = String.format("Nacos【%s:%s】下线服务【%s】:\n服务名称: %s\nIP: %s\n端口: %s", serverAddr,
+								namespace, subscribeLogId, serviceName, ip, port);
+						WebHookWeixinText webHook = new WebHookWeixinText(content);
+						webHook.setMentionedList(mentionedList);
+						webHook.setMentionedMobileList(mentionedMobileList);
+						try {
+							WebHookUtils.post(weixinWebhookUrl, webHook);
+						}
+						catch (Exception e) {
+							log.error(String.format("【%s】发送企业微信 Webhook 异常：", subscribeLogId), e);
+						}
+					}
 				}
 			}
 

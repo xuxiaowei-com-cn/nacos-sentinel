@@ -11,9 +11,16 @@ nacos:
       server-addr: ${NACOS_SENTINEL_DISCOVERY_SERVER_ADDR:127.0.0.1:8848}
       namespace: ${NACOS_SENTINEL_DISCOVERY_NAMESPACE:public}
 ---
+nacos:
+  sentinel:
+    webhook:
+      weixin:
+        url: ${NACOS_SENTINEL_WEBHOOK_WEIXN_URL:}
+---
 logging:
   level:
     org.springframework.web: debug
+    org.springframework.web.client: debug
     org.apache.coyote.http11: debug
     org.apache.coyote.http2: debug
     cn.com.xuxiaowei.nacos.sentinel: debug
