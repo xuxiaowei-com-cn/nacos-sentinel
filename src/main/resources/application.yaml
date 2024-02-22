@@ -16,6 +16,8 @@ nacos:
     webhook:
       weixin:
         url: ${NACOS_SENTINEL_WEBHOOK_WEIXN_URL:}
+        mentioned-list: ${NACOS_SENTINEL_WEBHOOK_WEIXN_MENTIONED_LIST:}
+        mentioned-mobile-list: ${NACOS_SENTINEL_WEBHOOK_WEIXN_MENTIONED_MOBILE_LIST:}
 ---
 logging:
   level:
