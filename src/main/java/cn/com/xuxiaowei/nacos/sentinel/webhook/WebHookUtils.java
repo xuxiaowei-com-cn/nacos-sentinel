@@ -15,14 +15,14 @@ import java.util.Map;
 @Slf4j
 public class WebHookUtils {
 
-	public static Map<String, Object> post(String url, WebHookWeixin webHook) {
+	public static Map<String, Object> post(String url, WebHook webHook) {
 
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<WebHookWeixin> httpEntity = new HttpEntity<>(webHook, httpHeaders);
+		HttpEntity<WebHook> httpEntity = new HttpEntity<>(webHook, httpHeaders);
 
 		return restTemplate.postForObject(url, httpEntity, Map.class);
 	}

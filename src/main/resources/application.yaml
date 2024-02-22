@@ -19,6 +19,12 @@ nacos:
         mentioned-list: ${NACOS_SENTINEL_WEBHOOK_WEIXN_MENTIONED_LIST:}
         mentioned-mobile-list: ${NACOS_SENTINEL_WEBHOOK_WEIXN_MENTIONED_MOBILE_LIST:}
 ---
+nacos:
+  sentinel:
+    webhook:
+      feishu:
+        url: ${NACOS_SENTINEL_WEBHOOK_FEISHU_URL:}
+---
 logging:
   level:
     org.springframework.web: debug

@@ -2,9 +2,11 @@ package cn.com.xuxiaowei.nacos.sentinel.listener;
 
 import cn.com.xuxiaowei.nacos.sentinel.entity.Discovery;
 import cn.com.xuxiaowei.nacos.sentinel.properties.NacosSentinelDiscoveryProperties;
+import cn.com.xuxiaowei.nacos.sentinel.properties.NacosSentinelWebhookFeishuProperties;
 import cn.com.xuxiaowei.nacos.sentinel.properties.NacosSentinelWebhookWeixinProperties;
 import cn.com.xuxiaowei.nacos.sentinel.repository.NacosDiscoveryRepository;
 import cn.com.xuxiaowei.nacos.sentinel.utils.StringUtils;
+import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookFeishu;
 import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookUtils;
 import cn.com.xuxiaowei.nacos.sentinel.webhook.WebHookWeixinMarkdown;
 import com.alibaba.nacos.api.PropertyKeyConst;
@@ -44,6 +46,8 @@ public class NacosDiscoveryListener {
 
 	private NacosSentinelWebhookWeixinProperties nacosSentinelWebhookWeixinProperties;
 
+	private NacosSentinelWebhookFeishuProperties nacosSentinelWebhookFeishuProperties;
+
 	private NacosDiscoveryRepository nacosDiscoveryRepository;
 
 	@Autowired
@@ -55,6 +59,12 @@ public class NacosDiscoveryListener {
 	public void setNacosSentinelWebhookWeixinProperties(
 			NacosSentinelWebhookWeixinProperties nacosSentinelWebhookWeixinProperties) {
 		this.nacosSentinelWebhookWeixinProperties = nacosSentinelWebhookWeixinProperties;
+	}
+
+	@Autowired
+	public void setNacosSentinelWebhookFeishuProperties(
+			NacosSentinelWebhookFeishuProperties nacosSentinelWebhookFeishuProperties) {
+		this.nacosSentinelWebhookFeishuProperties = nacosSentinelWebhookFeishuProperties;
 	}
 
 	@Autowired
@@ -220,9 +230,12 @@ public class NacosDiscoveryListener {
 
 			String serverAddr = nacosSentinelDiscoveryProperties.getServerAddr();
 			String namespace = nacosSentinelDiscoveryProperties.getNamespace();
+
 			String weixinWebhookUrl = nacosSentinelWebhookWeixinProperties.getUrl();
 			List<String> mentionedList = nacosSentinelWebhookWeixinProperties.getMentionedList();
 			List<String> mentionedMobileList = nacosSentinelWebhookWeixinProperties.getMentionedMobileList();
+
+			String feishuWebhookUrl = nacosSentinelWebhookFeishuProperties.getUrl();
 
 			if (!adds.isEmpty()) {
 				log.info("");
@@ -233,9 +246,11 @@ public class NacosDiscoveryListener {
 					int port = instance.getPort();
 
 					String clusterName = instance.getClusterName();
+					String groupName = StringUtils.extractAtLeft(instance.getServiceName());
+
 					log.info("【{}】Nacos 上线服务名称: {}，IP: {}，端口: {}，群组名称: {}，集群名称: {}", subscribeLogId, serviceName,
-							StringUtils.formatLength(ip, 15), StringUtils.formatLength(port, 5),
-							StringUtils.extractAtLeft(instance.getServiceName()), clusterName);
+							StringUtils.formatLength(ip, 15), StringUtils.formatLength(port, 5), groupName,
+							clusterName);
 
 					Discovery getByUnique = nacosDiscoveryRepository.getByUnique(serviceName, ip, port);
 
@@ -250,8 +265,7 @@ public class NacosDiscoveryListener {
 					if (org.springframework.util.StringUtils.hasText(weixinWebhookUrl)) {
 						String content = String.format(
 								"Nacos【%s:%s】<font color=\"info\">上线服务</font>【%s】:\n服务名称: %s\nIP: %s\n端口: %s\n群组名称: %s\n集群名称: %s",
-								serverAddr, namespace, subscribeLogId, serviceName, ip, port,
-								StringUtils.extractAtLeft(instance.getServiceName()), clusterName);
+								serverAddr, namespace, subscribeLogId, serviceName, ip, port, groupName, clusterName);
 						WebHookWeixinMarkdown webHook = new WebHookWeixinMarkdown(content);
 						webHook.setMentionedList(mentionedList);
 						webHook.setMentionedMobileList(mentionedMobileList);
@@ -264,6 +278,26 @@ public class NacosDiscoveryListener {
 						}
 					}
 
+					if (org.springframework.util.StringUtils.hasText(feishuWebhookUrl)) {
+						WebHookFeishu webHook = new WebHookFeishu().setLogId(subscribeLogId)
+							.setServerAddr(serverAddr)
+							.setOnline("上线")
+							.setNamespace(namespace)
+							.setServiceName(serviceName)
+							.setIp(ip)
+							.setPort(port + "")
+							.setGroupName(groupName)
+							.setClusterName(clusterName);
+
+						try {
+							Map<String, Object> post = WebHookUtils.post(feishuWebhookUrl, webHook);
+							log.info("【{}】发送飞书 Webhook 响应：{}", subscribeLogId, post);
+						}
+						catch (Exception e) {
+							log.error(String.format("【%s】发送飞书 Webhook 异常：", subscribeLogId), e);
+						}
+
+					}
 				}
 			}
 
@@ -293,6 +327,25 @@ public class NacosDiscoveryListener {
 						catch (Exception e) {
 							log.error(String.format("【%s】发送企业微信 Webhook 异常：", subscribeLogId), e);
 						}
+					}
+
+					if (org.springframework.util.StringUtils.hasText(feishuWebhookUrl)) {
+						WebHookFeishu webHook = new WebHookFeishu().setLogId(subscribeLogId)
+							.setServerAddr(serverAddr)
+							.setOnline("下线")
+							.setNamespace(namespace)
+							.setServiceName(serviceName)
+							.setIp(ip)
+							.setPort(port + "");
+
+						try {
+							Map<String, Object> post = WebHookUtils.post(feishuWebhookUrl, webHook);
+							log.info("【{}】发送飞书 Webhook 响应：{}", subscribeLogId, post);
+						}
+						catch (Exception e) {
+							log.error(String.format("【%s】发送飞书 Webhook 异常：", subscribeLogId), e);
+						}
+
 					}
 				}
 			}

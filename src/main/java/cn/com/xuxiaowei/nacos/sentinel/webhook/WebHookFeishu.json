@@ -1,0 +1,11 @@
+{
+  "logId": "日志ID",
+  "serverAddr": "Nacos地址",
+  "online": "是否上线",
+  "namespace": "命名空间",
+  "serviceName": "服务名称",
+  "ip": "服务IP",
+  "port": "服务端口",
+  "groupName": "群组名称",
+  "clusterName": "集群名称"
+}

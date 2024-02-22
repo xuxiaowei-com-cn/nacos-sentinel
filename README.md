@@ -132,6 +132,22 @@
 
 - [docker 镜像](https://hub.docker.com/r/xuxiaoweicomcn/nacos-sentinel)
 
+- 飞书数据格式
+
+```json
+{
+  "logId": "日志ID",
+  "serverAddr": "Nacos地址",
+  "online": "是否上线",
+  "namespace": "命名空间",
+  "serviceName": "服务名称",
+  "ip": "服务IP",
+  "port": "服务端口",
+  "groupName": "群组名称",
+  "clusterName": "集群名称"
+}
+```
+
 ### 环境变量
 
 | 环境变量名称                                             | 默认值               | 说明                                                                                                                           |
@@ -147,6 +163,7 @@
 | NACOS_SENTINEL_WEBHOOK_WEIXN_URL                   |                   | 企业微信 Webhook 地址，为空时不启用                                                                                                       |
 | NACOS_SENTINEL_WEBHOOK_WEIXN_MENTIONED_LIST        |                   | userid的列表，提醒群中的指定成员(@某个成员)，@all表示提醒所有人，如果开发者获取不到userid，可以使用 `NACOS_SENTINEL_WEBHOOK_WEIXN_MENTIONED_MOBILE_LIST`，多个值使用英文逗号隔开 |
 | NACOS_SENTINEL_WEBHOOK_WEIXN_MENTIONED_MOBILE_LIST |                   | 手机号列表，提醒手机号对应的群成员(@某个成员)，@all表示提醒所有人，多个值使用英文逗号隔开                                                                             |
+| NACOS_SENTINEL_WEBHOOK_FEISHU_URL                  |                   | 飞书 Webhook 地址，为空时不启用。飞书数据格式参见上方内容                                                                                            |
 
 ## [代码格式规范 spring-javaformat](https://github.com/spring-io/spring-javaformat)
 
