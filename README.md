@@ -123,14 +123,16 @@
 
 ## 发布
 
-- [快照版](https://s01.oss.sonatype.org/content/repositories/snapshots/cn/com/xuxiaowei/nacos/nacos-sentinel)
-- [发布版](https://s01.oss.sonatype.org/content/repositories/releases/cn/com/xuxiaowei/nacos/nacos-sentinel)
+- Maven 仓库
+    - [快照版](https://s01.oss.sonatype.org/content/repositories/snapshots/cn/com/xuxiaowei/nacos/nacos-sentinel)
+        - 可下载最新的二进制快照（可直接运行的 jar 包）
+    - [发布版](https://s01.oss.sonatype.org/content/repositories/releases/cn/com/xuxiaowei/nacos/nacos-sentinel)
+        - 暂未发布
+- [docker 镜像](https://hub.docker.com/r/xuxiaoweicomcn/nacos-sentinel)
 
 ## [更新日志](CHANGELOG.md)
 
 ## 使用说明
-
-- [docker 镜像](https://hub.docker.com/r/xuxiaoweicomcn/nacos-sentinel)
 
 - 飞书数据格式
 
