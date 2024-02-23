@@ -46,7 +46,7 @@ build:java:
       - .m2/repository
   rules:
     - changes:
-        - src
+        - src/**/**
         - .gitlab-ci.yml
         - .springjavaformatconfig
         - Dockerfile
@@ -84,7 +84,7 @@ build:docker:
       --destination "${DOCKER_USERNAME}/${ARTIFACT_ID}:${VERSION}-${CI_PIPELINE_ID}"
   rules:
     - changes:
-        - src
+        - src/**/**
         - .gitlab-ci.yml
         - .springjavaformatconfig
         - Dockerfile
