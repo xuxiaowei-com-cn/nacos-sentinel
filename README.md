@@ -104,14 +104,6 @@
     <img alt="total lines" src="https://tokei.rs/b1/github/xuxiaowei-com-cn/nacos-sentinel">
   </a>
 
-  <a target="_blank" href="https://github.com/xuxiaowei-com-cn/nacos-sentinel/blob/main/pom.xml">
-    <img alt="Spring Boot" src="https://img.shields.io/static/v1?logo=Spring Boot&message=2.7.x">
-  </a>
-
-  <a target="_blank" href="https://github.com/xuxiaowei-com-cn/nacos-sentinel/blob/main/pom.xml">
-        <img alt="Redis" src="https://img.shields.io/static/v1?logo=Redis&message=6.2.6&color=blue">
-  </a>
-
   <a target="_blank" href="https://github.com/alibaba/dragonwell8/releases/tag/dragonwell-8.10.11_jdk8u322-ga">
     <img alt="JDK" src="https://img.shields.io/badge/JDK-1.8.0_322-blue.svg"/>
   </a>
